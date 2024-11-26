@@ -1,0 +1,49 @@
+#!/bin/bash
+
+show_help() {
+    echo "Usage: organize_pdfs --root /path/to/root_folder [--report]"
+}
+
+if [ "$#" -lt 2 ]; then
+    show_help
+    exit 1
+fi
+
+ROOT_DIR=""
+REPORT=0
+
+while [[ "$#" -gt 0 ]]; do
+    case $1 in
+        --root)
+            ROOT_DIR="$2"
+            shift
+            ;;
+        --report)
+            REPORT=1
+            ;;
+        *)
+            show_help
+            exit 1
+            ;;
+    esac
+    shift
+done
+
+if [ -z "$ROOT_DIR" ]; then
+    show_help
+    exit 1
+fi
+
+# Get the directory where the script is located, following symlinks
+SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
+
+# Run the setup script
+bash "$SCRIPT_DIR/setup_directories.sh" "$ROOT_DIR"
+
+# Run the classification program
+"$SCRIPT_DIR/classify_pdfs" "$ROOT_DIR"
+
+if [ $REPORT -eq 1 ]; then
+    bash "$SCRIPT_DIR/generate_report.sh" "$ROOT_DIR"
+fi
+
