@@ -20,5 +20,15 @@ jobs:
     - name: Install the tool
       run: sudo make install
 
+    - name: Create test PDFs
+      run: |
+        mkdir -p /home/runner/work/organize_pdfs/root_folder
+        echo "Test content for Programming" > /home/runner/work/organize_pdfs/root_folder/test_programming.pdf
+        echo "Test content for AI" > /home/runner/work/organize_pdfs/root_folder/test_ai.pdf
+        echo "Test content for Math" > /home/runner/work/organize_pdfs/root_folder/test_math.pdf
+        echo "Test content for Database" > /home/runner/work/organize_pdfs/root_folder/test_database.pdf
+        echo "Test content for Security" > /home/runner/work/organize_pdfs/root_folder/test_security.pdf
+        echo "Test content for Others" > /home/runner/work/organize_pdfs/root_folder/test_others.pdf
+
     - name: Run organize_pdfs
       run: organize_pdfs --root /home/runner/work/organize_pdfs/root_folder --report
