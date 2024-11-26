@@ -32,3 +32,8 @@ jobs:
 
     - name: Run organize_pdfs
       run: organize_pdfs --root /home/runner/work/organize_pdfs/root_folder --report
+
+    - name: Display file tree
+      run: |
+        echo "File tree after running organize_pdfs:"
+        tree /home/runner/work/organize_pdfs/root_folder
