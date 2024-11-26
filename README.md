@@ -1,5 +1,4 @@
 
-```markdown
 # organize_pdfs
 
 ## Overview
