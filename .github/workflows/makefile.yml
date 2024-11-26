@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  build-and-run:
     runs-on: ubuntu-latest
 
     steps:
@@ -16,3 +16,9 @@ jobs:
 
     - name: Build project
       run: make build
+
+    - name: Install the tool
+      run: sudo make install
+
+    - name: Run organize_pdfs
+      run: organize_pdfs --root /home/runner/work/organize_pdfs/root_folder --report
