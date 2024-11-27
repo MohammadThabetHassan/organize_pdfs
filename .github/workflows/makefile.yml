@@ -23,12 +23,13 @@ jobs:
     - name: Create test PDFs
       run: |
         mkdir -p /home/runner/work/organize_pdfs/root_folder
-        echo "Test content for Programming" > /home/runner/work/organize_pdfs/root_folder/test_programmingC.pdf
-        echo "Test content for AI" > /home/runner/work/organize_pdfs/root_folder/test_Neural_Networks.pdf
-        echo "Test content for Math" > /home/runner/work/organize_pdfs/root_folder/test_math_calculus.pdf
-        echo "Test content for Database" > /home/runner/work/organize_pdfs/root_folder/test_database_SQl.pdf
-        echo "Test content for Security" > /home/runner/work/organize_pdfs/root_folder/test_cryptography.pdf
+        echo "Test content for Programming" > /home/runner/work/organize_pdfs/root_folder/python_intro.pdf
+        echo "Test content for AI" > /home/runner/work/organize_pdfs/root_folder/machine_learning_guide.pdf
+        echo "Test content for Math" > /home/runner/work/organize_pdfs/root_folder/calculus_tutorial.pdf
+        echo "Test content for Database" > /home/runner/work/organize_pdfs/root_folder/sql_query_basics.pdf
+        echo "Test content for Security" > /home/runner/work/organize_pdfs/root_folder/cryptography_basics.pdf
         echo "Test content for Others" > /home/runner/work/organize_pdfs/root_folder/test_others.pdf
+echo "Test content for Java" > /home/runner/work/organize_pdfs/root_folder/java_tutorial.pdf
 
     - name: Run organize_pdfs
       run: organize_pdfs --root /home/runner/work/organize_pdfs/root_folder --report
