@@ -14,6 +14,9 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
+    - name: Install dependencies
+      run: sudo apt-get update && sudo apt-get install -y make tree
+
     - name: Build project
       run: make build
 
@@ -29,7 +32,7 @@ jobs:
         echo "Test content for Database" > /home/runner/work/organize_pdfs/root_folder/sql_query_basics.pdf
         echo "Test content for Security" > /home/runner/work/organize_pdfs/root_folder/cryptography_basics.pdf
         echo "Test content for Others" > /home/runner/work/organize_pdfs/root_folder/test_others.pdf
-echo "Test content for Java" > /home/runner/work/organize_pdfs/root_folder/java_tutorial.pdf
+        echo "Test content for Java" > /home/runner/work/organize_pdfs/root_folder/java_tutorial.pdf
 
     - name: Run organize_pdfs
       run: organize_pdfs --root /home/runner/work/organize_pdfs/root_folder --report
