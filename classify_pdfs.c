@@ -73,10 +73,21 @@ void *classify_files(void *arg) {
     char dest_path[MAX_FILENAME_LENGTH];
 
     for (int i = 0; i < total_files; i++) {
-        if (pdf_files[i] == NULL) continue;
+        char src_path[MAX_FILENAME_LENGTH];
+
+        /* Another thread may rename and free pdf_files[i] at any time
+         * (a filename can match two categories), so only touch the shared
+         * pointer under the lock and work on a private copy of the path. */
+        pthread_mutex_lock(&lock);
+        if (pdf_files[i] == NULL) {
+            pthread_mutex_unlock(&lock);
+            continue;
+        }
+        snprintf(src_path, MAX_FILENAME_LENGTH, "%s", pdf_files[i]);
+        pthread_mutex_unlock(&lock);
 
         int moved = 0;
-        char *filename = strrchr(pdf_files[i], '/') + 1;
+        char *filename = strrchr(src_path, '/') + 1;
         char filename_normalized[MAX_FILENAME_LENGTH];
         strncpy(filename_normalized, filename, MAX_FILENAME_LENGTH);
         to_lowercase(filename_normalized);
@@ -97,11 +108,13 @@ void *classify_files(void *arg) {
                         if (strstr(filename_normalized, subcat_keyword_normalized)) {
                             snprintf(dest_path, MAX_FILENAME_LENGTH, "%s/%s/%s/%s", root_dir, category->category, category->subcategories[s], filename);
                             pthread_mutex_lock(&lock);
-                            if (rename(pdf_files[i], dest_path) == 0) {
-                                free(pdf_files[i]);
-                                pdf_files[i] = NULL;
-                            } else {
-                                fprintf(stderr, "Error moving file '%s' to '%s': %s\n", pdf_files[i], dest_path, strerror(errno));
+                            if (pdf_files[i] != NULL) {
+                                if (rename(pdf_files[i], dest_path) == 0) {
+                                    free(pdf_files[i]);
+                                    pdf_files[i] = NULL;
+                                } else {
+                                    fprintf(stderr, "Error moving file '%s' to '%s': %s\n", src_path, dest_path, strerror(errno));
+                                }
                             }
                             pthread_mutex_unlock(&lock);
                             moved = 1;
@@ -114,11 +127,13 @@ void *classify_files(void *arg) {
                 if (!moved) {
                     snprintf(dest_path, MAX_FILENAME_LENGTH, "%s/%s/%s", root_dir, category->category, filename);
                     pthread_mutex_lock(&lock);
-                    if (rename(pdf_files[i], dest_path) == 0) {
-                        free(pdf_files[i]);
-                        pdf_files[i] = NULL;
-                    } else {
-                        fprintf(stderr, "Error moving file '%s' to '%s': %s\n", pdf_files[i], dest_path, strerror(errno));
+                    if (pdf_files[i] != NULL) {
+                        if (rename(pdf_files[i], dest_path) == 0) {
+                            free(pdf_files[i]);
+                            pdf_files[i] = NULL;
+                        } else {
+                            fprintf(stderr, "Error moving file '%s' to '%s': %s\n", src_path, dest_path, strerror(errno));
+                        }
                     }
                     pthread_mutex_unlock(&lock);
                     moved = 1;
