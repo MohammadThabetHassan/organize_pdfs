@@ -7,7 +7,7 @@
 ## Features
 - **Automatic Classification**: Categorizes PDF files into predefined folders based on their content.
 - **Reporting**: Generates a detailed report of the classification process.
-- **Customizable**: Users can define their own categories and rules for classification.
+- **Editable categories**: The classification categories and their keywords are defined in `classify_pdfs.c` and can be changed by editing that file and rebuilding.
 
 ## Installation
 To build and install the tool, follow these steps:
